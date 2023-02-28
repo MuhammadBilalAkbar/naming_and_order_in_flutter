@@ -271,7 +271,7 @@ class Future<T> {
 Future<S> then<S>(FutureOr<S> onValue(T value)) => ...
 }
 ```
-Here, the generic method then<S>() uses S to avoid shadowing the T on Future<T>.
+Here, the generic method then`<S>()` uses `S` to avoid shadowing the `T` on `Future<T>`.
 <br/>
 If none of the above cases are a good fit, then either another single-letter mnemonic name or a descriptive name is fine:
 <br/>good:
