@@ -287,3 +287,69 @@ final List<Edge> edges = [];
 }
 ```
 In practice, the existing conventions cover most type parameters.
+
+## Naming
+
+### Begin global constant names with prefix "k"
+Examples:
+```dart
+const double kParagraphSpacing = 1.5;
+const String kSaveButtonTitle = 'Save';
+const Color _kBarrierColor = Colors.black54;
+```
+However, where possible avoid global constants. Rather than `kDefaultButtonColor`, consider `Button.defaultColor`. If necessary, consider creating a class with a private constructor to hold relevant constants. It’s not necessary to add the k prefix to non-global constants.
+
+### Avoid abbreviations
+Unless the abbreviation is more recognizable than the expansion (e.g. XML, HTTP, JSON), expand abbrevations when selecting a name for an identifier. In general, avoid one-character names unless one character is idiomatic (for example, prefer index over i, but prefer x over `horizontalPosition`).
+
+### Avoid anonymous parameter names
+Provide full type information and names even for parameters that are otherwise unused. This makes it easier for people reading the code to tell what is actually going on (e.g. what is being ignored). For example:
+```dart
+onTapDown: (TapDownDetails details) { print('hello!'); }, // GOOD
+onTapUp: (_) { print('good bye'); }, // BAD
+```
+
+### Naming rules for typedefs and function variables
+When naming callbacks, use `FooCallback` for the typedef, `onFoo` for the callback argument or property, and `handleFoo` for the method that is called. If `Foo` is a verb, prefer the present tense to the past tense (e.g. `onTap` instead of `onTapped`).
+<br/><br/>
+If you have a callback with arguments but you want to ignore the arguments, give the type and names of the arguments anyway. That way, if someone copies and pastes your code, they will not have to look up what the arguments are.
+<br/><br/>
+Never call a method `onFoo`. If a property is called `onFoo` it must be a function type. (For all values of "Foo".)
+<br/><br/>
+Prefer using `typedef`s to declare callbacks. Typedefs benefit from having documentation on the type itself and make it easier to read and find common callsites for the signature.
+
+### Spell words in identifiers and comments correctly
+Our primary source of truth for spelling is the Material Design Specification. Our secondary source of truth is dictionaries.
+<br/><br/>
+Avoid "cute" spellings. For example, 'colors', not 'colorz'.
+<br/><br/>
+Prefer US English spellings. For example, 'colorize', not 'colourise', and 'canceled', not 'cancelled'.
+<br/><br/>
+Prefer compound words over "cute" spellings to avoid conflicts with reserved words. For example, 'classIdentifier', not 'klass'.
+
+### Capitalize identifiers consistent with their spelling
+In general, we use [Dart’s recommendations](https://dart.dev/guides/language/effective-dart/style#identifiers)'s for naming identifiers. Please consider the following additional guidelines:
+<br/><br/>
+If a word is correctly spelled (according to our sources of truth as described in the previous section) as a single word, then it should not have any inner capitalization or spaces.
+<br/><br/>
+For examples, prefer `toolbar`, `scrollbar`, but `appBar` ('app bar' in documentation), `tabBar` ('tab bar' in documentation).
+<br/><br/>
+Similarly, prefer `offstage` rather than `offStage`.
+<br/><br/>
+Avoid using class names with `iOS` when possible. The capitalization of `iOS` is supposed to be exactly that, but that doesn’t work well with camelCase and even less with UpperCamelCase; use alternatives like "Cupertino" or "UIKit" instead when possible. If you really really must use "iOS" in an identifier, capitalize it to `IOS`. Whether or not the two-letter exception applies to "iOS" is debatable, but `IOS` is consistent with Dart APIs, and the alternatives (`IOs`, `Ios`) are even more jarring. (Previous versions of this guide incorrectly indicated that `Ios` was the correct capitalization when necessary; this form should not be used in new code.)
+
+### Avoid double negatives in APIs
+Name your boolean variables in positive ways, such as "enabled" or "visible", even if the default value is true.
+<br/><br/>
+This is because, when you have a property or argument named "disabled" or "hidden", it leads to code such as `input.disabled = false` or `widget.hidden = false` when you’re trying to enable or show the widget, which is very confusing.
+
+### Prefer naming the argument to a setter value
+Unless this would cause other problems, use `value` for the name of a setter’s argument. This makes it easier to copy/paste the setter later.
+
+### Qualify variables and methods used only for debugging
+If you have variables or methods (or even classes!) that are only used in debug mode, prefix their names with `debug` or `_debug` (or, for classes, `_Debug`).
+<br/><br/>
+Do not use debugging variables or methods (or classes) in production code.
+
+### Avoid naming undocumented libraries
+In other words, do not use the `library` keyword, unless it is a documented top-level library intended to be imported by users.
