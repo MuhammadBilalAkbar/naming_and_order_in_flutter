@@ -186,8 +186,25 @@ var packageVersions = packageGraph.solveConstraints();
 ```
 Note, though, that this guideline is softer than the previous two. The work an operation performs is often an implementation detail that isn’t relevant to the caller, and performance and robustness boundaries change over time. Most of the time, name your members based on what they do for the caller, not how they do it.
 
+### AVOID starting a method name with get.
+In most cases, the method should be a getter with get removed from the name. For example, instead of a method named getBreakfastOrder(), define a getter named breakfastOrder.
+<br/>
+Even if the member does need to be a method because it takes arguments or otherwise isn’t a good fit for a getter, you should still avoid get. Like the previous guidelines state, either:
+- Simply drop get and use a noun phrase name like breakfastOrder() if the caller mostly cares about the value the method returns.
+- Use a verb phrase name if the caller cares about the work being done, but pick a verb that more precisely describes the work than get, like create, download, fetch, calculate, request, aggregate, etc.
 
-
+### PREFER naming a method to___() if it copies the object’s state to a new object.
+Linter rule: use_to_and_as_if_applicable
+<br/>
+A conversion method is one that returns a new object containing a copy of almost all of the state of the receiver but usually in some different form or representation. The core libraries have a convention that these methods are named starting with to followed by the kind of result.
+<br/>
+If you define a conversion method, it’s helpful to follow that convention.
+<br/>good:
+```dart
+list.toSet();
+stackTrace.toString();
+dateTime.toLocal();
+```
 
 
 
