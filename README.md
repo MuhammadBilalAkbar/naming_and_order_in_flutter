@@ -288,7 +288,8 @@ final List<Edge> edges = [];
 ```
 In practice, the existing conventions cover most type parameters.
 
-
+## Libraries
+A leading underscore character ( _ ) indicates that a member is private to its library. This is not mere convention, but is built into the language itself.
 
 
 
