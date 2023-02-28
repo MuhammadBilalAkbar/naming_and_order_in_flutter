@@ -464,4 +464,318 @@ quux: 2.0,
 ```
 When breaking a parameter list into multiple lines, do the same.
 
+### If you have a newline after some opening punctuation, match it on the closing punctuation.
+And vice versa.
+<br/>Example:
+```dart
+// BAD:
+  foo(
+    bar, baz);
+  foo(
+    bar,
+    baz);
+  foo(bar,
+    baz
+  );
 
+// GOOD:
+  foo(bar, baz);
+  foo(
+    bar,
+    baz,
+  );
+  foo(bar,
+    baz);
+```
+
+### Use a trailing comma for arguments, parameters, and list items, but only if they each have their own line.
+Example:
+```dart
+List<int> myList = [
+  1,
+  2,
+];
+myList = <int>[3, 4];
+
+foo1(
+  bar,
+  baz,
+);
+foo2(bar, baz);
+```
+Whether to put things all on one line or whether to have one line per item is an aesthetic choice. We prefer whatever ends up being most readable. Typically this means that when everything would fit on one line, put it all on one line, otherwise, split it one item to a line.
+<br/><br/>
+However, there are exceptions. For example, if there are six back-to-back lists and all but one of them need multiple lines, then one would not want to have the single case that does fit on one line use a different style than the others.
+```dart
+// BAD (because the second list is unnecessarily and confusingly different than the others):
+List<FooBarBaz> myLongList1 = <FooBarBaz>[
+  FooBarBaz(one: firstArgument, two: secondArgument, three: thirdArgument),
+  FooBarBaz(one: firstArgument, two: secondArgument, three: thirdArgument),
+  FooBarBaz(one: firstArgument, two: secondArgument, three: thirdArgument),
+];
+List<Quux> myLongList2 = <Quux>[ Quux(1), Quux(2) ];
+List<FooBarBaz> myLongList3 = <FooBarBaz>[
+  FooBarBaz(one: firstArgument, two: secondArgument, three: thirdArgument),
+  FooBarBaz(one: firstArgument, two: secondArgument, three: thirdArgument),
+  FooBarBaz(one: firstArgument, two: secondArgument, three: thirdArgument),
+];
+
+// GOOD (code is easy to scan):
+List<FooBarBaz> myLongList1 = <FooBarBaz>[
+  FooBarBaz(one: firstArgument, two: secondArgument, three: thirdArgument),
+  FooBarBaz(one: firstArgument, two: secondArgument, three: thirdArgument),
+  FooBarBaz(one: firstArgument, two: secondArgument, three: thirdArgument),
+];
+List<Quux> myLongList2 = <Quux>[
+  Quux(1),
+  Quux(2),
+];
+List<FooBarBaz> myLongList3 = <FooBarBaz>[
+  FooBarBaz(one: firstArgument, two: secondArgument, three: thirdArgument),
+  FooBarBaz(one: firstArgument, two: secondArgument, three: thirdArgument),
+  FooBarBaz(one: firstArgument, two: secondArgument, three: thirdArgument),
+];
+```
+
+### Prefer single quotes for strings
+Use double quotes for nested strings or (optionally) for strings that contain single quotes. For all other strings, use single quotes.
+<br/>Example:
+```dart
+print('Hello ${name.split(" ")[0]}');
+```
+
+### Consider using ⇒ for short functions and methods
+But only use `⇒` when everything, including the function declaration, fits on a single line.
+<br/>Example:
+```dart
+// BAD:
+String capitalize(String s) =>
+  '${s[0].toUpperCase()}${s.substring(1)}';
+
+// GOOD:
+String capitalize(String s) => '${s[0].toUpperCase()}${s.substring(1)}';
+
+String capitalize(String s) {
+  return '${s[0].toUpperCase()}${s.substring(1)}';
+}
+```
+
+### Use `⇒` for inline callbacks that just return list or map literals
+If your code is passing an inline closure that merely returns a list or map literal, or is merely calling another function, then if the argument is on its own line, then rather than using braces and a `return` statement, you can instead use the `⇒` form. When doing this, the closing `]`, `},` or `)` bracket will line up with the argument name, for named arguments, or the `(` of the argument list, for positional arguments.
+<br/>For example:
+```dart
+  // GOOD, but slightly more verbose than necessary since it doesn't use =>
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+      onSelected: (String value) { print('Selected: $value'); },
+      itemBuilder: (BuildContext context) {
+        return <PopupMenuItem<String>>[
+          PopupMenuItem<String>(
+            value: 'Friends',
+            child: MenuItemWithIcon(Icons.people, 'Friends', '5 new')
+          ),
+          PopupMenuItem<String>(
+            value: 'Events',
+            child: MenuItemWithIcon(Icons.event, 'Events', '12 upcoming')
+          ),
+        ];
+      }
+    );
+  }
+
+  // GOOD, does use =>, slightly briefer
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+      onSelected: (String value) { print('Selected: $value'); },
+      itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
+        PopupMenuItem<String>(
+          value: 'Friends',
+          child: MenuItemWithIcon(Icons.people, 'Friends', '5 new')
+        ),
+        PopupMenuItem<String>(
+          value: 'Events',
+          child: MenuItemWithIcon(Icons.event, 'Events', '12 upcoming')
+        ),
+      ]
+    );
+  }
+```
+The important part is that the closing punctuation lines up with the start of the line that has the opening punctuation, so that you can easily determine what’s going on by just scanning the indentation on the left edge.
+
+### Prefer single line for short collection-if and collection-for
+If the code fits in a single line don’t split it.
+<br/>For example:
+```dart
+// BAD
+final List<String> args = <String>[
+  'test',
+  if (useFlutterTestFormatter) '-rjson'
+  else '-rcompact',
+  '-j1',
+  if (!hasColor)
+    '--no-color',
+  for (final String opt in others)
+    opt,
+];
+
+// GOOD
+final List<String> args = <String>[
+  'test',
+  if (useFlutterTestFormatter) '-rjson' else '-rcompact',
+  '-j1',
+  if (!hasColor) '--no-color',
+  for (final String opt in others) opt,
+];
+```
+Otherwise indent with 2 spaces
+```dart
+// GOOD
+final List<String> args = <String>[
+  'test',
+  if (useFlutterTestFormatter)
+    '-rjson.very.very.very.very.very.very.very.very.long'
+  else
+    '-rcompact.very.very.very.very.very.very.very.very.long',
+  '-j1',
+  if (!hasColor)
+    '--no-color.very.very.very.very.very.very.very.very.long',
+  for (final String opt in others)
+    methodVeryVeryVeryVeryVeryVeryVeryVeryVeryLong(opt),
+];
+```
+
+### Put spread inside collection-if or collection-for on the same line
+Spreads inside collection-if or collection-for are used to insert several elements. It’s easier to read to have spread on the line of `if`, `else`, or `for`.
+```dart
+// BAD
+final List<String> args = <String>[
+  'test',
+  if (condA) 
+    ...<String>[
+      'b',
+      'c',
+    ]
+  else
+    '-rcompact',
+  for (final String opt in others)
+    ...<String>[
+      m1(opt),
+      m2(opt),
+    ],
+];
+
+// GOOD
+final List<String> args = <String>[
+  'test',
+  if (condA) ...<String>[
+    'b',
+    'c',
+  ] else
+    '-rcompact',
+  for (final String opt in others) ...<String>[
+    m1(opt),
+    m2(opt),
+  ],
+];
+```
+
+### Use braces for long functions and methods
+Use a block (with braces) when a body would wrap onto more than one line (as opposed to using `⇒;` the cases where you can use `⇒` are discussed in the previous two guidelines).
+
+### Separate the 'if' expression from its statement
+(This is enforced by the `always_put_control_body_on_new_line` and `curly_braces_in_flow_control_structures` lints.)
+<br/>Don’t put the statement part of an 'if' statement on the same line as the expression, even if it is short. (Doing so makes it unobvious that there is relevant code there. This is especially important for early returns.)
+<br/>Example:
+```dart
+// BAD:
+if (notReady) return;
+
+// GOOD:
+// Use this style for code that is expected to be publicly read by developers
+if (notReady) {
+  return;
+}
+```
+If the body is more than one line, or if there is an `else` clause, wrap the body in braces:
+```dart
+// BAD:
+if (foo)
+  bar(
+    'baz',
+  );
+
+// BAD:
+if (foo)
+  bar();
+else
+  baz();
+
+// GOOD:
+if (foo) {
+  bar(
+    'baz',
+  );
+}
+
+// GOOD:
+if (foo) {
+  bar();
+} else {
+  baz();
+}
+```
+We require bodies to make it very clear where the bodies belong.
+
+### Align expressions
+Where possible, subexpressions on different lines should be aligned, to make the structure of the expression easier. When doing this with a `return` statement chaining `||` or `&&` operators, consider putting the operators on the left hand side instead of the right hand side.
+```dart
+// BAD:
+if (foo.foo.foo + bar.bar.bar * baz - foo.foo.foo * 2 +
+    bar.bar.bar * 2 * baz > foo.foo.foo) {
+  // ...
+}
+
+// GOOD (notice how it makes it obvious that this code can be simplified):
+if (foo.foo.foo     + bar.bar.bar     * baz -
+    foo.foo.foo * 2 + bar.bar.bar * 2 * baz   > foo.foo.foo) {
+  // ...
+}
+// After simplification, it fits on one line anyway:
+if (bar.bar.bar * 3 * baz > foo.foo.foo * 2) {
+  // ...
+}
+```
+```dart
+// BAD:
+return foo.x == x &&
+    foo.y == y &&
+    foo.z == z;
+
+// GOOD:
+return foo.x == x &&
+       foo.y == y &&
+       foo.z == z;
+
+// ALSO GOOD:
+return foo.x == x
+    && foo.y == y
+    && foo.z == z;
+```
+
+### Prefer += over ++
+We generally slightly prefer `+=` over `++.`
+<br/><br/>
+In some languages/compilers postfix `++` is an antipattern because of performance reasons, and so it’s easier to just avoid it in general.
+<br/><br/>
+Because of the former, some people will use the prefix `++,` but this leads to statements that lead with punctuation, which is aesthetically displeasing.
+<br/><br/>
+In general, mutating variables as part of larger expressions leads to confusion about the order of operations, and entwines the increment with another calculation.
+<br/><br/>
+Using `++` does not make it obvious that the underlying variable is actually being mutated, whereas += more clearly does (it’s an assignment with an `=` sign).
+<br/><br/>
+Finally, `+=` is more convenient when changing the increment to a number other than 1.
+
+### Use double literals for double constants
+To make it clearer when something is a double or an integer, even if the number is a round number, include a decimal point in double literals. For example, if a function `foo` takes a double, write `foo(1.0)` rather than `foo(1)` because the latter makes it look like the function takes an integer.
