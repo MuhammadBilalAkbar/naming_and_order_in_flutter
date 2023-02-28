@@ -4,7 +4,7 @@
 
 ### DO use terms consistently
 Use the same name for the same thing, throughout your code. If a precedent already exists outside your API that users are likely to know, follow that precedent.
-good:
+<br />good:
 ```dart
 pageCount         // A field.
 updatePageCount() // Consistent with pageCount.
