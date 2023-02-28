@@ -40,7 +40,7 @@ HypertextTransferProtocolRequest
 
 ### PREFER putting the most descriptive noun last.
 The last word should be the most descriptive of what the thing is. You can prefix it with other words, such as adjectives, to further describe the thing.
-<br />good
+<br />good:
 ```dart:
 pageCount             // A count (of pages).
 ConversionSink        // A sink for doing conversions.
@@ -123,6 +123,35 @@ closeable     // Sounds like an interface.
 closingWindow // Returns a bool or a window?
 showPopup     // Sounds like it shows the popup.
 ```
+
+### CONSIDER omitting the verb for a named boolean parameter.
+This refines the previous rule. For named parameters that are boolean, the name is often just as clear without the verb, and the code reads better at the call site.
+<br />good:
+```dart
+Isolate.spawn(entryPoint, message, paused: false);
+var copy = List.from(elements, growable: true);
+var regExp = RegExp(pattern, caseSensitive: false);
+```
+
+### PREFER the “positive” name for a boolean property or variable.
+Most boolean names have conceptually “positive” and “negative” forms where the former feels like the fundamental concept and the latter is its negation—”open” and “closed”, “enabled” and “disabled”, etc. Often the latter name literally has a prefix that negates the former: “visible” and “in-visible”, “connected” and “dis-connected”, “zero” and “non-zero”.
+<br /><br />
+When choosing which of the two cases that true represents—and thus which case the property is named for—prefer the positive or more fundamental one. Boolean members are often nested inside logical expressions, including negation operators. If your property itself reads like a negation, it’s harder for the reader to mentally perform the double negation and understand what the code means.
+<br />good:
+```dart
+if (socket.isConnected && database.hasData) {
+socket.write(database.read());
+}
+```
+bad:
+```dart
+if (!socket.isDisconnected && !database.isEmpty) {
+socket.write(database.read());
+}
+```
+For some properties, there is no obvious positive form. Is a document that has been flushed to disk “saved” or “un-changed”? Is a document that hasn’t been flushed “un-saved” or “changed”? In ambiguous cases, lean towards the choice that is less likely to be negated by users or has the shorter name.
+<br /><br />
+`Exception`: With some properties, the negative form is what users overwhelmingly need to use. Choosing the positive case would force them to negate the property with ! everywhere. Instead, it may be better to use the negative case for that property.
 
 
 
