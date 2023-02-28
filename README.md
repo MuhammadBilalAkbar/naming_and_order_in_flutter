@@ -1,9 +1,9 @@
 # Naming and Order in Flutter
 
 ##### Table of Contents
-[Names](#Names)
-[Naming](#Naming)
-[Formatting](#Formatting)
+[Names](#Names)   
+[Naming](#Naming)   
+[Formatting](#Formatting)   
 
 ## Names
 
