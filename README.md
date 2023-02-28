@@ -353,3 +353,115 @@ Do not use debugging variables or methods (or classes) in production code.
 
 ### Avoid naming undocumented libraries
 In other words, do not use the `library` keyword, unless it is a documented top-level library intended to be imported by users.
+
+## Formatting
+These guidelines have no technical effect, but they are still important purely for consistency and readability reasons.
+<br/><br/>
+We do not yet use `dartfmt` (except in flutter/packages). Flutter code tends to use patterns that the standard Dart formatter does not handle well. Flutter team is [working with Dart team](https://github.com/flutter/flutter/issues/2025) to make `dartfmt` aware of these patterns.
+
+### In defense of the extra work that hand-formatting entails
+Flutter code might eventually be read by hundreds of thousands of people each day. Code that is easier to read and understand saves these people time. Saving each person even a second each day translates into hours or even days of saved time each day. The extra time spent by people contributing to Flutter directly translates into real savings for our developers, which translates to real benefits to our end users as our developers learn the framework faster.
+
+### Constructors come first in a class
+The default (unnamed) constructor should come first, then the named constructors. They should come before anything else (including, e.g., constants or static methods).
+<br/><br/>
+This helps readers determine whether the class has a default implied constructor or not at a glance. If it was possible for a constructor to be anywhere in the class, then the reader would have to examine every line of the class to determine whether or not there was an implicit constructor or not.
+
+### Order other class members in a way that makes sense
+The methods, properties, and other members of a class should be in an order that will help readers understand how the class works.
+<br/><br/>
+If there’s a clear lifecycle, then the order in which methods get invoked would be useful, for example an `initState` method coming before `dispose`. This helps readers because the code is in chronological order, so they can see variables get initialized before they are used, for instance. Fields should come before the methods that manipulate them, if they are specific to a particular group of methods.
+<br/><br/>For example, RenderObject groups all the layout fields and layout methods together, then all the paint fields and paint methods, because layout happens before paint.
+<br/><br/>If no particular order is obvious, then the following order is suggested, with blank lines between each one:
+1. Constructors, with the default constructor first.
+2. Constants of the same type as the class. 
+3. Static methods that return the same type as the class.
+4. Final fields that are set from the constructor. 
+5. Other static methods.
+6. Static properties and constants.
+7. Members for mutable properties, without new lines separating the members of a property, each property in the order:
+   - getter
+   - private field
+   - setter
+8. Read-only properties (other than `hashCode`).
+9. Operators (other than `==`). 
+10. Methods (other than `toString` and `build`). 
+11. The `build` method, for `Widget` and `State` classes. 
+12. `operator ==`, `hashCode`, `toString`, and diagnostics-related methods, in that order.
+<br/>
+Be consistent in the order of members. If a constructor lists multiple fields, then those fields should be declared in the same order, and any code that operates on all of them should operate on them in the same order (unless the order matters).
+
+### Constructor syntax
+If you call `super()` in your initializer list, put a space between the constructor arguments' closing parenthesis and the colon. If there’s other things in the initializer list, align the `super()` call with the other arguments. Don’t call `super` if you have no arguments to pass up to the superclass.
+```dart
+// one-line constructor example
+abstract class Foo extends StatelessWidget {
+  Foo(this.bar, { Key key, this.child }) : super(key: key);
+  final int bar;
+  final Widget child;
+  // ...
+}
+
+// fully expanded constructor example
+abstract class Foo extends StatelessWidget {
+  Foo(
+    this.bar, {
+    Key key,
+    Widget childWidget,
+  }) : child = childWidget,
+       super(
+         key: key,
+       );
+  final int bar;
+  final Widget child;
+  // ...
+}
+```
+
+### Prefer a maximum line length of 80 characters
+Aim for a maximum line length of roughly 80 characters, but prefer going over if breaking the line would make it less readable, or if it would make the line less consistent with other nearby lines. Prefer avoiding line breaks after assignment operators.
+```dart
+// BAD (breaks after assignment operator and still goes over 80 chars)
+final int a = 1;
+final int b = 2;
+final int c =
+    a.very.very.very.very.very.long.expression.that.returns.three.eventually().but.is.very.long();
+final int d = 4;
+final int e = 5;
+
+// BETTER (consistent lines, not much longer than the earlier example)
+final int a = 1;
+final int b = 2;
+final int c = a.very.very.very.very.very.long.expression.that.returns.three.eventually().but.is.very.long();
+final int d = 4;
+final int e = 5;
+```
+```dart
+// BAD (breaks after assignment operator)
+final List<FooBarBaz> _members =
+  <FooBarBaz>[const Quux(), const Qaax(), const Qeex()];
+
+// BETTER (only slightly goes over 80 chars)
+final List<FooBarBaz> _members = <FooBarBaz>[const Quux(), const Qaax(), const Qeex()];
+
+// BETTER STILL (fits in 80 chars)
+final List<FooBarBaz> _members = <FooBarBaz>[
+  const Quux(),
+  const Qaax(),
+  const Qeex(),
+];
+```
+
+### Indent multi-line argument and parameter lists by 2 characters
+When breaking an argument list into multiple lines, indent the arguments two characters from the previous line.
+<br/>
+Example:
+```dart
+Foo f = Foo(
+bar: 1.0,
+quux: 2.0,
+);
+```
+When breaking a parameter list into multiple lines, do the same.
+
+
