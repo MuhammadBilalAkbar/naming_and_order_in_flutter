@@ -3,7 +3,7 @@
 ## Names
 
 ### DO use terms consistently
-Use the same name for the same thing, throughout your code. If a precedent already exists outside your API that users are likely to know, follow that precedent.<br />
+Use the same<br/> name for the same thing, throughout your code. If a precedent already exists outside your API that users are likely to know, follow that precedent.<br />
 good:
 ```dart
 pageCount         // A field.
