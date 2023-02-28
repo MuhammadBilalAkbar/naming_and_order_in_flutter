@@ -206,6 +206,89 @@ stackTrace.toString();
 dateTime.toLocal();
 ```
 
+### PREFER naming a method as___() if it returns a different representation backed by the original object.
+Linter rule: use_to_and_as_if_applicable
+<br/>
+Conversion methods are “snapshots”. The resulting object has its own copy of the original object’s state. There are other conversion-like methods that return views—they provide a new object, but that object refers back to the original. Later changes to the original object are reflected in the view.
+<br/>
+The core library convention for you to follow is as___().
+<br/>good:
+```dart
+var map = table.asMap();
+var list = bytes.asFloat32List();
+var future = subscription.asFuture();
+```
+
+### AVOID describing the parameters in the function’s or method’s name.
+The user will see the argument at the call site, so it usually doesn’t help readability to also refer to it in the name itself.
+<br/>good:
+```dart
+list.add(element);
+map.remove(key);
+```
+bad:
+```dart
+list.addElement(element)
+map.removeKey(key)
+```
+However, it can be useful to mention a parameter to disambiguate it from other similarly-named methods that take different types:
+<br/>good:
+```dart
+map.containsKey(key);
+map.containsValue(value);
+```
+
+### DO follow existing mnemonic conventions when naming type parameters.
+Single letter names aren’t exactly illuminating, but almost all generic types use them. Fortunately, they mostly use them in a consistent, mnemonic way. The conventions are:
+- E for the element type in a collection:
+<br/>good:
+```dart
+class IterableBase<E> {}
+class List<E> {}
+class HashSet<E> {}
+class RedBlackTree<E> {}
+```
+- K and V for the key and value types in an associative collection:
+<br/>good:
+```dart
+class Map<K, V> {}
+class Multimap<K, V> {}
+class MapEntry<K, V> {}
+```
+- R for a type used as the return type of a function or a class’s methods. This isn’t common, but appears in typedefs sometimes and in classes that implement the visitor pattern:
+<br/>good:
+```dart
+abstract class ExpressionVisitor<R> {
+  R visitBinary(BinaryExpression node);
+  R visitLiteral(LiteralExpression node);
+  R visitUnary(UnaryExpression node);
+}
+```
+- Otherwise, use T, S, and U for generics that have a single type parameter and where the surrounding type makes its meaning obvious. There are multiple letters here to allow nesting without shadowing a surrounding name. For example:
+<br/>good:
+```dart
+class Future<T> {
+Future<S> then<S>(FutureOr<S> onValue(T value)) => ...
+}
+```
+Here, the generic method then<S>() uses S to avoid shadowing the T on Future<T>.
+<br/>
+If none of the above cases are a good fit, then either another single-letter mnemonic name or a descriptive name is fine:
+<br/>good:
+```dart
+class Graph<N, E> {
+final List<N> nodes = [];
+final List<E> edges = [];
+}
+
+class Graph<Node, Edge> {
+final List<Node> nodes = [];
+final List<Edge> edges = [];
+}
+```
+In practice, the existing conventions cover most type parameters.
+
+
 
 
 
